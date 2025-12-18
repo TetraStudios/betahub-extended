@@ -176,7 +176,7 @@ UBH_ReportFormWidget* UBH_BackgroundService::SpawnBugReportWidget(APlayerControl
     UE_LOG(LogBetaHub, Log, TEXT("ReportForm widget created successfully."));
 
     // Set the widget to be centered in the viewport
-    ReportForm->AddToViewport();
+    //ReportForm->AddToViewport();
 
     return ReportForm;
 }

@@ -57,7 +57,10 @@ public:
         TFunction<void()> OnSuccess,
         TFunction<void(const FString&)> OnFailure,
         const FString& ReleaseLabel = TEXT(""),
-        const FString& ReleaseId = TEXT(""));
+        const FString& ReleaseId = TEXT(""),
+        const FString& Category = TEXT("")
+    );
+
 
     /**
      * Submits a bug report to BetaHub (legacy method)
@@ -100,7 +103,12 @@ public:
         TFunction<void()> OnSuccess,
         TFunction<void(const FString&)> OnFailure,
         const FString& ReleaseLabel = TEXT(""),
-        const FString& ReleaseId = TEXT(""));
+        const FString& ReleaseId = TEXT(""),
+        const FString& Category = TEXT("")
+
+    );
+    
+    void SubmitTextOnly(UBH_PluginSettings* Settings, const FString& Feedback, TFunction<void()> OnSuccess, TFunction<void(const FString&)> OnFailure);
 
 private:
     void SubmitReportWithMediaAsync(
@@ -114,7 +122,9 @@ private:
         TFunction<void()> OnSuccess,
         TFunction<void(const FString&)> OnFailure,
         const FString& ReleaseLabel = TEXT(""),
-        const FString& ReleaseId = TEXT(""));
+        const FString& ReleaseId = TEXT(""),
+        const FString& Category = TEXT(""));
+
 
     void SubmitMedia(
         UBH_PluginSettings* Settings,
@@ -123,7 +133,8 @@ private:
         const FString& FieldName,
         const FString& FilePath,
         const FString& Contents,
-        const FString& ContentType);
+        const FString& ContentType,
+        const FString& Category);
 
     static FString ParseIssueIdFromResponse(const FString& Response);
     static FString ParseErrorFromResponse(const FString& Response);

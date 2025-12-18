@@ -33,7 +33,9 @@ void UBH_BugReport::SubmitReportWithMedia(
     TFunction<void()> OnSuccess,
     TFunction<void(const FString&)> OnFailure,
     const FString& ReleaseLabel,
-    const FString& ReleaseId
+    const FString& ReleaseId,
+    const FString& Category
+
 )
 {
     // HTTP requests are already asynchronous, no need for Async wrapper
@@ -54,7 +56,9 @@ void UBH_BugReport::SubmitReportWithMediaAsync(
     TFunction<void()> OnSuccess,
     TFunction<void(const FString&)> OnFailure,
     const FString& ReleaseLabel,
-    const FString& ReleaseId
+    const FString& ReleaseId,
+    const FString& Category
+
     )
 {
     if (!Settings)
@@ -84,6 +88,7 @@ void UBH_BugReport::SubmitReportWithMediaAsync(
     InitialRequest->SetHeader(TEXT("BetaHub-Project-ID"), Settings->ProjectId);
     InitialRequest->SetHeader(TEXT("Accept"), TEXT("application/json"));
     InitialRequest->AddField(TEXT("issue[description]"), Description);
+    InitialRequest->AddField(TEXT("category"), Category);
     InitialRequest->AddField(TEXT("issue[unformatted_steps_to_reproduce]"), StepsToReproduce);
     InitialRequest->AddField(TEXT("draft"), TEXT("true")); // Create as draft for media upload
 
@@ -318,7 +323,8 @@ void UBH_BugReport::SubmitReport(
     TFunction<void()> OnSuccess,
     TFunction<void(const FString&)> OnFailure,
     const FString& ReleaseLabel,
-    const FString& ReleaseId
+    const FString& ReleaseId,
+    const FString& Category
 )
 {
     // Convert legacy parameters to new FBH_MediaFile struct format
@@ -385,8 +391,15 @@ void UBH_BugReport::SubmitReport(
         WrappedOnSuccess,
         WrappedOnFailure,
         ReleaseLabel,
-        ReleaseId
+        ReleaseId,
+        Category
     );
+}
+
+
+void UBH_BugReport::SubmitTextOnly(UBH_PluginSettings* Settings, const FString& Feedback, TFunction<void()> OnSuccess, TFunction<void(const FString&)> OnFailure)
+{
+    SubmitReport(Settings, nullptr, Feedback, FString(), FString(), FString(), false, false, false, OnSuccess, OnFailure, Settings->ReleaseLabel, FString(), "Suggestion");
 }
 
 void UBH_BugReport::SubmitMedia(
@@ -396,7 +409,9 @@ void UBH_BugReport::SubmitMedia(
     const FString& FieldName,
     const FString& FilePath,
     const FString& Contents,
-    const FString& ContentType)
+    const FString& ContentType,
+    const FString& Category
+    )
 {
     if (!Settings)
     {

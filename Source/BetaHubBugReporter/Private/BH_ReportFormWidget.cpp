@@ -19,21 +19,7 @@ UBH_ReportFormWidget::UBH_ReportFormWidget(const FObjectInitializer& ObjectIniti
     SetIsFocusable(true);
 }
 
-void UBH_ReportFormWidget::NativeOnInitialized()
-{
-    Super::NativeOnInitialized();
 
-    // Bind the button click event
-    if (SubmitButton)
-    {
-        SubmitButton->OnClicked.AddDynamic(this, &UBH_ReportFormWidget::OnSubmitButtonClicked);
-    }
-
-    if (CloseButton)
-    {
-        CloseButton->OnClicked.AddDynamic(this, &UBH_ReportFormWidget::OnCloseClicked);
-    }
-}
 
 void UBH_ReportFormWidget::Setup(UBH_PluginSettings* InSettings, UBH_GameRecorder* InGameRecorder, const FString& InScreenshotPath, const FString& InLogFileContents,
 bool bTryCaptureMouse)
@@ -43,37 +29,48 @@ bool bTryCaptureMouse)
     ScreenshotPath = InScreenshotPath;
     LogFileContents = InLogFileContents;
 
-    if (bTryCaptureMouse)
-    {
-        SetCursorState();
-    }
-
     GameRecorder->StopRecording();
 }
 
-void UBH_ReportFormWidget::SubmitReport()
+void UBH_ReportFormWidget::SubmitReport(FString BugDescription, FString StepsToReproduce, bool includeVideo, bool includeScreenshots)
 { 
-    FString BugDescription = BugDescriptionEdit->GetText().ToString();
-    FString StepsToReproduce = StepsToReproduceEdit->GetText().ToString();
-
     UE_LOG(LogBetaHub, Log, TEXT("Bug Description: %s"), *BugDescription);
     UE_LOG(LogBetaHub, Log, TEXT("Steps to Reproduce: %s"), *StepsToReproduce);
 
     UBH_BugReport* BugReport = NewObject<UBH_BugReport>();
     BugReport->SubmitReport(Settings, GameRecorder, BugDescription, StepsToReproduce, ScreenshotPath, LogFileContents,
-        IncludeVideoCheckbox->IsChecked(), IncludeLogsCheckbox->IsChecked(), IncludeScreenshotCheckbox->IsChecked(),
+        includeVideo, true, includeScreenshots,
         [this]()
         {
-            ShowPopup("Success", "Report submitted successfully!");
-            RemoveFromParent();
+            OnFormSubmitted(true);
         },
         [this](const FString& ErrorMessage)
         {
-            ShowPopup("Error", ErrorMessage);
-            SubmitLabel->SetText(FText::FromString("Submit"));
+            OnFormSubmitted(false);
         }
     );
 }
+
+void UBH_ReportFormWidget::SubmitTextReport(FString Description)
+{
+    UBH_BugReport* BugReport = NewObject<UBH_BugReport>();
+    BugReport->SubmitTextOnly(Settings, Description,
+        [this]()
+        {
+            OnFormSubmitted(true);
+        },
+        [this](const FString& ErrorMessage)
+        {
+            OnFormSubmitted(false);
+        }
+    );
+}
+
+void UBH_ReportFormWidget::OnFormSubmitted(bool Success)
+{
+
+}
+
 
 void UBH_ReportFormWidget::SetCursorState()
 {
@@ -125,9 +122,6 @@ void UBH_ReportFormWidget::NativeDestruct()
 {
     Super::NativeDestruct();
 
-    // Restore cursor state when the widget is destructed (hidden)
-    RestoreCursorState();
-
     IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 
     // We can't delete the screenshot file here as it still could be used by the BugReport to upload the media
@@ -140,31 +134,8 @@ void UBH_ReportFormWidget::NativeDestruct()
     // Do not start recording here, since it's the responsibility either of the close button, or BugReport class
 }
 
-void UBH_ReportFormWidget::OnSubmitButtonClicked()
-{
-    SubmitLabel->SetText(FText::FromString("Submitting..."));
-    SubmitReport();
-}
-
 void UBH_ReportFormWidget::OnCloseClicked()
 {
     GameRecorder->StartRecording(Settings->MaxRecordedFrames, Settings->MaxRecordingDuration);
     RemoveFromParent();
-}
-
-void UBH_ReportFormWidget::ShowPopup(const FString& Title, const FString& Description)
-{
-    if (Settings->PopupWidgetClass)
-    {
-        UBH_PopupWidget* PopupWidget = CreateWidget<UBH_PopupWidget>(GetWorld(), Settings->PopupWidgetClass);
-        if (PopupWidget)
-        {
-            PopupWidget->SetMessage(Title, Description);
-            PopupWidget->AddToViewport();
-        }
-    }
-    else
-    {
-        UE_LOG(LogBetaHub, Error, TEXT("PopupWidgetClass is null."));
-    }
 }
