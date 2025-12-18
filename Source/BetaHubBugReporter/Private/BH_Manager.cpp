@@ -5,6 +5,7 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Components/InputComponent.h"
+#include <Kismet/GameplayStatics.h>
 
 UBH_Manager::UBH_Manager()
 {
@@ -30,22 +31,18 @@ void UBH_Manager::StartService(UGameInstance* GI)
             return;
         }
     }
-
-    GI->OnLocalPlayerAddedEvent.AddUObject(this, &UBH_Manager::OnLocalPlayerAdded);
     
     BackgroundService = NewObject<UBH_BackgroundService>(this, UBH_BackgroundService::StaticClass(), TEXT("BH_Manager_BH_BackgroundService0"), RF_Transient);
 
     BackgroundService->StartService();
 }
 
+
+
 void UBH_Manager::StopService()
 {
     if (BackgroundService)
     {
-        if (CurrentPlayerController.IsValid())
-        {
-            CurrentPlayerController->PopInputComponent(InputComponent.Get());
-        }
 
         BackgroundService->StopService();
         BackgroundService = nullptr;
@@ -76,32 +73,12 @@ UBH_ReportFormWidget* UBH_Manager::SpawnBugReportWidget(bool bTryCaptureMouse)
     
     if (Settings->ReportFormWidgetClass)
     {
-        return BackgroundService->SpawnBugReportWidget(CurrentPlayerController.Get(), bTryCaptureMouse);
+        return BackgroundService->SpawnBugReportWidget(UGameplayStatics::GetPlayerController(this, 0), bTryCaptureMouse);
     }
     else
     {
         UE_LOG(LogBetaHub, Error, TEXT("Cannot spawn bug report widget. No widget class specified or found."));
         return nullptr;
-    }
-}
-
-void UBH_Manager::OnLocalPlayerAdded(ULocalPlayer* Player)
-{
-    Player->OnPlayerControllerChanged().AddUObject(this, &UBH_Manager::OnPlayerControllerChanged);
-}
-
-void UBH_Manager::OnPlayerControllerChanged(APlayerController* PC)
-{
-    CurrentPlayerController = PC;
-
-    if (PC)
-    {
-        UInputComponent* NewInputComponent = NewObject<UInputComponent>(PC, UInputComponent::StaticClass(), TEXT("BH_Manager_InputComponent0"), RF_Transient);
-        NewInputComponent->RegisterComponent();
-        NewInputComponent->BindKey(Settings->ShortcutKey, IE_Pressed, this, &UBH_Manager::OnBackgroundServiceRequestWidget);
-        PC->PushInputComponent(NewInputComponent);
-
-        InputComponent = NewInputComponent;
     }
 }
 

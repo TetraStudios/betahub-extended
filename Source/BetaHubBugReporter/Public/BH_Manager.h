@@ -47,13 +47,6 @@ private:
     UPROPERTY(Transient)
     TObjectPtr<UBH_PluginSettings> Settings = nullptr;
 
-    void OnLocalPlayerAdded(ULocalPlayer* Player);
-    void OnPlayerControllerChanged(APlayerController* PC);
-    
-    TWeakObjectPtr<UInputComponent> InputComponent;
-    
-    TWeakObjectPtr<APlayerController> CurrentPlayerController;
-
 public:
     UBH_Manager();
 

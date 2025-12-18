@@ -16,7 +16,6 @@ UBH_ReportFormWidget::UBH_ReportFormWidget(const FObjectInitializer& ObjectIniti
     , bWasCursorVisible(false)
     , bWasCursorLocked(false)
 {
-    SetIsFocusable(true);
 }
 
 
