@@ -28,7 +28,6 @@ public class BetaHubBugReporter : ModuleRules
 			new string[]
 			{
 				"Core",
-                "ProjectShatterpoint",
 				"CommonUI"
 				// ... add other public dependencies that you statically link with here ...
 			}
@@ -50,7 +49,6 @@ public class BetaHubBugReporter : ModuleRules
 				"RenderCore",
 				"RHI",
                 "CommonUI",
-                "ProjectShatterpoint"
 
 				// ... add private dependencies that you statically link with here ...	
 			}
