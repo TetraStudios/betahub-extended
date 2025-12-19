@@ -7,7 +7,7 @@
 #include "Components/MultiLineEditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Components/CheckBox.h"
-#include "ExtendedCommonActivatableWidget.h"
+#include "CommonActivatableWidget.h"
 
 #include "BH_ReportFormWidget.generated.h"
 
