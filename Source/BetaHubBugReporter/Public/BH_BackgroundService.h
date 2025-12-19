@@ -35,7 +35,7 @@ public:
     UBH_BackgroundService();
 
     UFUNCTION(BlueprintCallable, Category="BugReport")
-    UBH_ReportFormWidget* SpawnBugReportWidget(APlayerController* LocalPlayerController, bool bTryCaptureMouse);
+    UBH_ReportFormWidget* SpawnBugReportWidget(APlayerController* LocalPlayerController, bool bTryCaptureMouse, const TSubclassOf<UBH_ReportFormWidget>& ReportFormWidgetClassInput);
 
     void StartService();
     void StopService();

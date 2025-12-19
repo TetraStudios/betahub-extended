@@ -57,7 +57,7 @@ public:
     void StopService();
 
     UFUNCTION(BlueprintCallable, Category="Bug Report")
-    UBH_ReportFormWidget* SpawnBugReportWidget(bool bTryCaptureMouse = true);
+    UBH_ReportFormWidget* SpawnBugReportWidget(bool bTryCaptureMouse = true, const TSubclassOf<UBH_ReportFormWidget> ReportFormWidgetClassInput = nullptr);
 
     // Callback function to handle widget spawning
     UFUNCTION(BlueprintCallable, Category="Bug Report")

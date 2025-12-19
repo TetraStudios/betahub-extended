@@ -63,7 +63,7 @@ void UBH_Manager::OnBackgroundServiceRequestWidget()
     }
 }
 
-UBH_ReportFormWidget* UBH_Manager::SpawnBugReportWidget(bool bTryCaptureMouse)
+UBH_ReportFormWidget* UBH_Manager::SpawnBugReportWidget(bool bTryCaptureMouse, const TSubclassOf<UBH_ReportFormWidget> ReportFormWidgetClassInput)
 {
     if (!BackgroundService)
     {
@@ -73,7 +73,7 @@ UBH_ReportFormWidget* UBH_Manager::SpawnBugReportWidget(bool bTryCaptureMouse)
     
     if (Settings->ReportFormWidgetClass)
     {
-        return BackgroundService->SpawnBugReportWidget(UGameplayStatics::GetPlayerController(this, 0), bTryCaptureMouse);
+        return BackgroundService->SpawnBugReportWidget(UGameplayStatics::GetPlayerController(this, 0), bTryCaptureMouse, ReportFormWidgetClassInput);
     }
     else
     {

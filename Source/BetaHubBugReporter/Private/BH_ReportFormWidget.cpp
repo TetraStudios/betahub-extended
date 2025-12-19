@@ -31,21 +31,21 @@ bool bTryCaptureMouse)
     GameRecorder->StopRecording();
 }
 
-void UBH_ReportFormWidget::SubmitReport(FString BugDescription, FString StepsToReproduce, bool includeVideo, bool includeScreenshots)
+void UBH_ReportFormWidget::SubmitReport(const FString& BugDescription, const FString& StepsToReproduce, bool includeVideo, bool includeScreenshots, bool includeLogs)
 { 
     UE_LOG(LogBetaHub, Log, TEXT("Bug Description: %s"), *BugDescription);
     UE_LOG(LogBetaHub, Log, TEXT("Steps to Reproduce: %s"), *StepsToReproduce);
 
     UBH_BugReport* BugReport = NewObject<UBH_BugReport>();
     BugReport->SubmitReport(Settings, GameRecorder, BugDescription, StepsToReproduce, ScreenshotPath, LogFileContents,
-        includeVideo, true, includeScreenshots,
+        includeVideo, includeLogs, includeScreenshots,
         [this]()
         {
-            OnFormSubmitted(true);
+            OnFormSubmitted(true, FString());
         },
         [this](const FString& ErrorMessage)
         {
-            OnFormSubmitted(false);
+            OnFormSubmitted(false, ErrorMessage);
         }
     );
 }
@@ -56,19 +56,18 @@ void UBH_ReportFormWidget::SubmitTextReport(FString Description)
     BugReport->SubmitTextOnly(Settings, Description,
         [this]()
         {
-            OnFormSubmitted(true);
+            OnFormSubmitted(true, FString());
         },
         [this](const FString& ErrorMessage)
         {
-            OnFormSubmitted(false);
+            OnFormSubmitted(false, ErrorMessage);
         }
     );
 }
 
-void UBH_ReportFormWidget::OnFormSubmitted(bool Success)
-{
 
-}
+
+
 
 
 void UBH_ReportFormWidget::SetCursorState()

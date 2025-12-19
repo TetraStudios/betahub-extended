@@ -134,7 +134,7 @@ void UBH_BackgroundService::CaptureScreenshot()
     }
 }
 
-UBH_ReportFormWidget* UBH_BackgroundService::SpawnBugReportWidget(APlayerController* LocalPlayerController, bool bTryCaptureMouse)
+UBH_ReportFormWidget* UBH_BackgroundService::SpawnBugReportWidget(APlayerController* LocalPlayerController, bool bTryCaptureMouse, const TSubclassOf<UBH_ReportFormWidget>& ReportFormWidgetClassInput)
 {
     if (!GEngine || !GEngine->GameViewport)
     {
@@ -155,7 +155,7 @@ UBH_ReportFormWidget* UBH_BackgroundService::SpawnBugReportWidget(APlayerControl
         return nullptr;
     }
 
-    if (!ReportFormWidgetClass)
+    if (!ReportFormWidgetClassInput)
     {
         UE_LOG(LogBetaHub, Error, TEXT("ReportFormWidgetClass is null."));
         return nullptr;
@@ -164,7 +164,7 @@ UBH_ReportFormWidget* UBH_BackgroundService::SpawnBugReportWidget(APlayerControl
     CaptureScreenshot();
 
     // Create the widget
-    UBH_ReportFormWidget* ReportForm = CreateWidget<UBH_ReportFormWidget>(LocalPlayerController, ReportFormWidgetClass);
+    UBH_ReportFormWidget* ReportForm = CreateWidget<UBH_ReportFormWidget>(LocalPlayerController, ReportFormWidgetClassInput);
     if (!ReportForm)
     {
         UE_LOG(LogBetaHub, Error, TEXT("Failed to create ReportForm widget."));

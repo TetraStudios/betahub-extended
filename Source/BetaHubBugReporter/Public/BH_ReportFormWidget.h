@@ -46,13 +46,13 @@ public:
     void Setup(UBH_PluginSettings* InSettings, UBH_GameRecorder* InGameRecorder, const FString& InScreenshotPath, const FString& InLogFileContents, bool bTryCaptureMouse);
 
     UFUNCTION(BlueprintCallable, Category="BugReport")
-    void SubmitReport(FString BugDescription, FString StepsToReproduce, bool includeVideo, bool includeScreenshots);
+    void SubmitReport(const FString& BugDescription, const FString& StepsToReproduce, bool includeVideo, bool includeScreenshots, bool includeLogs);
 
     UFUNCTION(BlueprintCallable, Category = "BugReport")
     void SubmitTextReport(FString Description);
 
-    UFUNCTION(BlueprintCallable, Category = "BugReport")
-    void OnFormSubmitted(bool Success);
+    UFUNCTION(BlueprintImplementableEvent, Category = "BugReport")
+    void OnFormSubmitted(bool Success, const FString& Message);
 
     UFUNCTION(BlueprintCallable, Category="Cursor")
     void SetCursorState();
