@@ -111,7 +111,7 @@ void UBH_BackgroundService::InitializeService()
     {
         // Set maximum video dimensions while maintaining aspect ratio
         GameRecorder->SetMaxVideoDimensions(Settings->MaxVideoWidth, Settings->MaxVideoHeight);
-        GameRecorder->StartRecording(Settings->MaxRecordedFrames, Settings->MaxRecordingDuration);
+        //GameRecorder->StartRecording(Settings->MaxRecordedFrames, Settings->MaxRecordingDuration);
     }
 }
 
