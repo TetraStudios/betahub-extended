@@ -44,6 +44,7 @@ void UBH_BackgroundService::StartService()
 
 void UBH_BackgroundService::RetryInitializeService()
 {
+    /*
     UE_LOG(LogBetaHub, Log, TEXT("Retrying to initialize service."));
     
     if (GetWorld()) 
@@ -103,6 +104,7 @@ void UBH_BackgroundService::RetryInitializeService()
     {
         UE_LOG(LogBetaHub, Warning, TEXT("World is still null."));
     }
+    */
 }
 
 void UBH_BackgroundService::InitializeService()
